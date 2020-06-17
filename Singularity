@@ -21,10 +21,6 @@ From: airl_lab/default/airl_env:base_ci
    cd /git/sferes2/exp/
    mkdir Deep-Grid_MAP-Elites
    
-   #====================================================================================================
-   exit 0 #NOTFORFINAL - the lines below this "exit" will be executed only when building the final image
-   #====================================================================================================
-   
    cd /git/sferes2/exp/
 
    git clone https://github.com/adaptive-intelligent-robotics/Deep-Grid_MAP-Elites.git ./Deep-Grid_MAP-Elites

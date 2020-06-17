@@ -1,6 +1,8 @@
 
 # Fast and stable MAP-Elites in noisy domains using deep grids
 
+[![https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg](https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg)](https://singularity-hub.org/collections/4459)
+
 This repository contains the code associated with [Fast and stable MAP-Elites in noisy domains using deep grids](url)
 
 This code proposes an implementation of several MAP-Elites variants to handle uncertainty: the Explicit-averaging approach,  the two Adaptive-sampling approaches proposed in [MAP-Elites for noisy domains by  adaptive sampling](https://dl.acm.org/doi/abs/10.1145/3319619.3321904) and the DG-MAP-Elites approach. It allows to compare these approaches on the three tasks described in the paper.
@@ -20,13 +22,13 @@ The main part of the code contains the following files and folders:
 - `stat` implements all the stats used to compare the algorithms.
 - `run_utils` contains utils function used to read the options of each run and run all algorithms.
 
-In addition, the `analysis` folder is used for the analysis, the `waf_tools` and `wscript` files for compilation, and the `singularity` folder to compile the Singularity container for this experiment.
+In addition, the `analysis` folder is used for the analysis, the `waf_tools` and `wscript` files for compilation, and the `Singularity` file to compile the Singularity container for this experiment.
 
 # Execution
 
 The results of the paper can be reproduced by running the Singularity container image of the experiment. 
 
-This container contains an `app` for each approach-task combination, defines in the  `singularity/Singularity` file:
+This container contains an `app` for each approach-task combination, defines in the `Singularity` file:
 - `Truth_arm_var`, `Truth_rastrigin`, `Truth_hexa`: Noise-free Baseline for each of the three tasks.
 - `Naive_1_arm_var`, `Naive_1_rastrigin`, `Naive_1_hexa`: Explicit-averaging approach with 1 re-sampling.
 - `Naive_50_arm_var`, `Naive_50_rastrigin`, `Naive_50_hexa`: Explicit-averaging approach with 50 re-sampling.
@@ -37,4 +39,4 @@ This container contains an `app` for each approach-task combination, defines in 
 
 A given app can be run with the following command: `singularity run --app *app_name* *image_name*`. All run-parameters are defined inside the apps, and the results of the execution are solved in a `results` folder, outside of the image, at the same location.
 
-This container can be recompile using the files in the singularity folder: `start_container.sh` to build a sandbox container and `build_final_image.sh` to build the final container image.
+This container can be recompile using the files in the `Singularity` file.
