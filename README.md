@@ -22,13 +22,13 @@ The main part of the code contains the following files and folders:
 - `stat` implements all the stats used to compare the algorithms.
 - `run_utils` contains utils function used to read the options of each run and run all algorithms.
 
-In addition, the `analysis` folder is used for the analysis, the `waf_tools` and `wscript` files for compilation, and the `Singularity` file to compile the Singularity container for this experiment.
+In addition, the `analysis` folder is used for the results analysis, the `waf_tools` and `wscript` files for compilation, and the `ressource` folder and `Singularity` file to compile the Singularity container for this experiment.
 
 # Execution
 
-The results of the paper can be reproduced by running the Singularity container image of the experiment. 
+The results of the paper can be reproduced by running the Singularity container image of the experiment. To pull the image from Singularity Hub, use the command: `singularity pull shub://adaptive-intelligent-robotics/Deep-Grid_MAP-Elites`.
 
-This container contains an `app` for each approach-task combination, defines in the `Singularity` file:
+This container contains an `app` for each approach-task combination, defined in the `Singularity` file:
 - `Truth_arm_var`, `Truth_rastrigin`, `Truth_hexa`: Noise-free Baseline for each of the three tasks.
 - `Naive_1_arm_var`, `Naive_1_rastrigin`, `Naive_1_hexa`: Explicit-averaging approach with 1 re-sampling.
 - `Naive_50_arm_var`, `Naive_50_rastrigin`, `Naive_50_hexa`: Explicit-averaging approach with 50 re-sampling.
@@ -37,6 +37,6 @@ This container contains an `app` for each approach-task combination, defines in 
 - `Deep_50_arm_var`, `Deep_50_rastrigin`, `Deep_50_hexa`: DG-MAP-Elites approach with depth 50.
 - `Analysis`: apps to generate the graphs and container plots of all variants and tasks which results are stored in the folder given as input.
 
-A given app can be run with the following command: `singularity run --app *app_name* *image_name*`. All run-parameters are defined inside the apps, and the results of the execution are solved in a `results` folder, outside of the image, at the same location.
+A given app can be run with the following command: `singularity run --app *app_name* Deep-Grid_MAP-Elites_latest.sif`. All run-parameters are defined inside the apps, and the results of the execution are solved in a `results` folder, outside of the image, at the same location.
 
-This container can be recompile using the files in the `Singularity` file.
+This container can be recompile using the `Singularity` file.
