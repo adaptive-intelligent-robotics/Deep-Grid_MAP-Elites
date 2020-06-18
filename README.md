@@ -26,7 +26,8 @@ In addition, the `analysis` folder is used for the results analysis, the `waf_to
 
 # Execution
 
-The results of the paper can be reproduced by running the Singularity container image of the experiment. To pull the image from Singularity Hub, use the command: `singularity pull shub://adaptive-intelligent-robotics/Deep-Grid_MAP-Elites`.
+The results of the paper can be reproduced by running the Singularity container image of the experiment. Instructions to install Singularity can be found in [Singularity documentation](https://sylabs.io/guides/3.5/user-guide/quick_start.html#quick-installation-steps).
+To pull the image from Singularity Hub, use the command: `singularity pull shub://adaptive-intelligent-robotics/Deep-Grid_MAP-Elites`.
 
 This container contains an `app` for each approach-task combination, defined in the `Singularity` file:
 - `Truth_arm_var`, `Truth_rastrigin`, `Truth_hexa`: Noise-free Baseline for each of the three tasks.
