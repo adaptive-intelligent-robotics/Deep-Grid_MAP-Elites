@@ -39,12 +39,17 @@ namespace sferes {
       // Get functions
       const double empty_value() const { return _empty_value; };
 
+      template<typename Ea> const bool is_empty(Ea& ea, desc_t desc) const
+      { return (_fitness(_find_index(ea, desc)) == _empty_value); };
+      template<typename Ea> const bool is_moved_empty(Ea& ea, desc_t desc) const
+      { return (_moved_fitness(_find_index(ea, desc)) == _empty_value); };
+
       template<typename Ea> const double get_fitness(Ea& ea, desc_t desc) const 
-      { return _fitness(_find_index(ea, desc)); };
+      { return _get_value(ea, desc, _fitness); };
       template<typename Ea> const double moved(Ea& ea, desc_t desc) const 
       { return _moved(_find_index(ea, desc)); };
       template<typename Ea> const double get_moved_fitness(Ea& ea, desc_t desc) const 
-      { return _moved_fitness(_find_index(ea, desc)); };
+      { return _get_value(ea, desc, _moved_fitness); };
 
       const double original_quality() const {return _original_quality; };
       const double moved_quality() const {return _moved_quality; };
@@ -91,6 +96,13 @@ namespace sferes {
 
       double _mean_cell_move;
       double _mean_move;
+
+      // Return the value of an array if not the empty value
+      template<typename Ea> const double _get_value(Ea& ea, desc_t desc, grid_t grid) const
+      {
+        double value = grid(_find_index(ea, desc));
+        return (value == _empty_value) ? 0.0 : value;
+      };
 
       // Compute index in one of the grid from the descriptor values
       template<typename Ea> index_t _find_index(Ea& ea, desc_t desc) const

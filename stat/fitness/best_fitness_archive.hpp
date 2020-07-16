@@ -49,9 +49,10 @@ namespace sferes {
 	    if (_write_moved_cell() 
 		|| !boost::fusion::at_c<PHANTOM_BEST_MODIFIER>(ea.fit_modifier()).moved(ea, desc_center))
 	      {
-		if (!_use_moved_fitness()
-		    || boost::fusion::at_c<PHANTOM_BEST_MODIFIER>(ea.fit_modifier()).get_moved_fitness(ea, desc_center)
-		    		> boost::fusion::at_c<PHANTOM_BEST_MODIFIER>(ea.fit_modifier()).empty_value()) 
+		if ((!_use_moved_fitness()
+		    && boost::fusion::at_c<PHANTOM_BEST_MODIFIER>(ea.fit_modifier()).is_empty(ea, desc_center))
+		    || (_use_moved_fitness()
+		    && boost::fusion::at_c<PHANTOM_BEST_MODIFIER>(ea.fit_modifier()).is_moved_empty(ea, desc_center)) )
 		  {
 		    // Add descriptor to line
 		    std::string write = std::to_string(offset) + " ";
