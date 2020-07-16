@@ -222,9 +222,7 @@ From: airl_lab/default/airl_env:base_ci
 
 %apprun Analysis
     cd /git/sferes2/
-    build/exp/Deep-Grid_MAP-Elites/analysis -d "$@"
-    python3 /git/sferes2/exp/Deep-Grid_MAP-Elites/analyse/python_plot/graph.py "$@" --p_value --legend
-    python3 /git/sferes2/exp/Deep-Grid_MAP-Elites/analyse/python_plot/archive.py "$@"
+    python3 /git/sferes2/exp/Deep-Grid_MAP-Elites/analyse/main_analysis.py -d "$@"
     cd /git/sferes2/exp/Deep-Grid_MAP-Elites/
     python3 ./gitlab_notebook/gen_report.py "$@"
 

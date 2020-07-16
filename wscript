@@ -62,10 +62,3 @@ def build(bld):
                            use = 'sferes2',
                            target = 'experiment',
                            variants = ['RASTRIGIN', 'HEXA_OMNI', 'ARM_VAR'])
-    
-    bld.program(features = 'cxx',
-                source = 'main_analysis.cpp',
-                includes = '. ../../',
-                uselib = 'BOOST EIGEN PYTHON',
-                use = 'sferes2',
-                target = 'analysis')

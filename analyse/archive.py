@@ -1,5 +1,4 @@
-########## Import #########
-import sys
+import os
 import math
 import numpy as np
 import matplotlib as mpl
@@ -7,27 +6,23 @@ import pandas as pd
 from matplotlib.patches import Circle, Wedge, Polygon, Rectangle
 from matplotlib.collections import PatchCollection
 import matplotlib.pyplot as plt
-from matplotlib.colors import ListedColormap
 
-
-
-######## Archive file analysis function #########
-
-def load_archive_text_file(path, D, R):
-    archive = np.genfromtxt(path, usecols = range(1,4))
-
-    grid = np.empty((D,D,))
-    grid[:] = np.nan
-
-    for i in range(archive.shape[0]):
-        bd = get_bd(archive[i,0], archive[i,1], D, R)
-
-        if not np.isnan(bd).any():
-            grid[bd[0],bd[1]] = archive[i,2]
-    return grid
+from utils import add_space
 
 
 ############ Polar coordinate calculation functions #############
+
+def load_archive_text_file(path, D, R):
+    archive = np.genfromtxt(path, usecols = range(1,4))
+    grid = np.empty((D,D,))
+    grid[:] = np.nan
+    if len(archive.shape) > 1:
+        for i in range(archive.shape[0]):
+            bd = get_bd(archive[i,0], archive[i,1], D, R)
+
+            if not np.isnan(bd).any():
+                grid[bd[0],bd[1]] = archive[i,2]
+    return grid
 
 def get_nb_points(D, D1, i):
     return int(round( D * (i+0.5)/(D1+0.5)))
@@ -55,12 +50,10 @@ def get_bd(x, y, D=350, R=0.5):
         bd = [np.nan, np.nan]; # Invalid individuals
     return bd
 
-
-########## Plot function ############
+############## Plot polar archive functions ###################
 
 def grid_plot(ax, data, D=350, R=0.5, no_border = False,cmap=None, norm=None, vmin =0, vmax=1):
     linewidth = 0.2
-
     theta = np.linspace(0, 2 * np.pi, 768)
     lseg, D1 = get_lseg_and_D1(D,R)
 
@@ -84,7 +77,7 @@ def grid_plot(ax, data, D=350, R=0.5, no_border = False,cmap=None, norm=None, vm
         r[0] = r[0] if r[0]< R else R
         r[1] = r[1] if r[1]< R else R
         
-        if not no_border: ax.plot(theta, np.repeat(r[0] , theta.shape), '-k', lw=linewidth) # plots the circles of each ring
+        if not no_border: ax.plot(theta, np.repeat(r[0] , theta.shape), '-k', lw=linewidth) # circles of each ring
         nb_points=get_nb_points(D, D1, i)
         r0 = np.repeat(r[:, np.newaxis], res*nb_points + 1 , axis=1).T
         theta_offset = 2*np.pi/nb_points
@@ -106,8 +99,10 @@ def grid_plot(ax, data, D=350, R=0.5, no_border = False,cmap=None, norm=None, vm
     ax.plot(theta, np.repeat(R , theta.shape), '-k', lw=linewidth) # plots last circle
 
 
-def plot_archive_graph(name, path, dim, radius, picname, vmin, vmax):
+def plot_circular_archive(name, path, dim, radius, picname, colormap, vmin, vmax):
     data = load_archive_text_file(path, dim, radius)
+    if all([all([np.isnan(x) for x in y]) for y in data]):
+        return False
     plt.figure(figsize=(10, 10))
 
     # Cut subplots
@@ -115,7 +110,7 @@ def plot_archive_graph(name, path, dim, radius, picname, vmin, vmax):
 
     # First subplot is the archive
     ax = plt.subplot(gs[0], projection='polar')
-    grid_plot(ax,data, no_border=False, cmap = 'viridis', vmin=vmin, vmax=vmax)
+    grid_plot(ax,data, no_border=False, cmap = colormap, vmin=vmin, vmax=vmax)
     ax.set_rmax(radius)
     ax.grid(False)
     ax.axis('off')
@@ -124,7 +119,7 @@ def plot_archive_graph(name, path, dim, radius, picname, vmin, vmax):
     # Second subplot is the colormap
     ax2 = plt.subplot(gs[1], projection=None)
     ax2.imshow(np.outer(np.arange(vmin,vmax,0.01),np.ones(10)), aspect='auto',
-            cmap=plt.get_cmap('viridis'), origin="lower", extent=[0,1,vmin,vmax])
+            cmap=plt.get_cmap(colormap), origin="lower", extent=[0,1,vmin,vmax])
     ax2.tick_params(
                 axis='x',          # changes apply to the x-axis
                 which='both',      # both major and minor ticks are affected
@@ -134,26 +129,86 @@ def plot_archive_graph(name, path, dim, radius, picname, vmin, vmax):
     ax2.yaxis.tick_right()
     plt.savefig(picname)
     plt.close()
+    return True
 
+########### Plot cartesian archive functions #################
 
+# Compute x and y value from a desc
+def compute_value(vec, dim):
+    valx = 0
+    valy = 0
+    space = 1
+    for i in range (0, len(dim), 2):
+        valx += round(vec[i] * (dim[i] - 1)) * space
+        space += dim[i]
+    space = 1
+    for i in range (1, len(dim), 2):
+        valy += round(vec[i] * (dim[i] - 1)) * space
+        space += dim[i]
+    return valx, valy
+    
+# Load archive file
+def load_archive(path, dim, vmin, vmax):
+    x = []
+    y = []
+    color = []
+    if os.path.isfile(path):
+        with open(path) as f:
+            for line in f:
+                values =  [float(value) for value in line.rstrip().split(' ') if value] # Gen number, desc, fitness
+                valx, valy = compute_value(values[1:-1], dim)
+                x.append(valx)
+                y.append(valy)
+                color.append(values[-1])
+    # Add the extrems values
+    extrem1, extrem2 = compute_value([1 for i in range (len(dim))], dim)
+    color.append(vmax)
+    x.append(0.95*extrem1)
+    y.append(0.95*extrem2)
+    color.append(vmin)
+    x.append(0.05*extrem1)
+    y.append(0.05*extrem2)
+    return x, y, color
 
-######## Main ##########
+# Get the point sizes from the dimensions of the archive
+def point_size(dim):
+    val1 = 1
+    for i in range (0, len(dim), 2):
+        val1 *= dim[i]
+    val2 = 1
+    for i in range (1, len(dim), 2):
+        val2 *= dim[i]
+    val = max(val1, val2)
+    return 300000.0 / (val * val)
 
-print("\n \nPrinting archives \n")
+def plot_cartesian_archive(name, path, dim, picname, colormap, vmin, vmax):
+    x, y, fitness = load_archive(path, dim, vmin, vmax)
+    size = point_size(dim)
+    plt.figure(figsize=(10, 10))
+    plt.scatter(x, y, c=fitness, s=size, cmap=colormap);
+    plt.title(name)
+    plt.axis('off')
+    plt.savefig(picname)
 
-# Path declaration
-path = sys.argv[1]
+########## Main function ##########
 
-# Open the archives file
-frame = pd.read_csv(path + "/archives.dat", delimiter = ',')
-
-# For each archive in the archives file
-for i in range (0, frame.shape[0]):
-    name = frame['name'].iloc[i]
-    plot_archive_graph(name.replace("_", " "), frame['path'].iloc[i], 
-                       frame['dim'].iloc[i], frame['radius'].iloc[i],
-                       path + "/" + name + ".png", 
-                       frame['min'].iloc[i], frame['max'].iloc[i])
-
-print("Finish plotting. Printed: ", frame.shape[0], " archives \n")
-
+def archive(path, task, task_frame, stat_frame, path_frame):
+    colormap = 'viridis'
+    for algo in stat_frame['algo'].drop_duplicates().values.tolist(): # Plot one archive per algo only
+        arch = path_frame[path_frame['algo'] == algo]
+        file_name = arch['stat'].values[0]
+        print("For ", algo, " print ", arch['path'].values[0])
+        arch_name = task + "_" + algo + "_-_" + file_name[:file_name.find('-')]
+        if task_frame['radius'].values[0] != 0: # if polar archive
+            plot_circular_archive(add_space(arch_name), 
+                                  arch['path'].values[0],
+                                  task_frame['bd'].values[0][0],
+                                  task_frame['radius'].values[0],
+                                  os.path.join(path, arch_name + ".png"),
+                                  colormap, 0.0, 1.0)
+        else:
+            plot_cartesian_archive(add_space(arch_name), 
+                                   arch['path'].values[0],
+                                   task_frame['bd'].values[0],
+                                   os.path.join(path, arch_name + ".png"),
+                                   colormap, 0.0, 1.0)
