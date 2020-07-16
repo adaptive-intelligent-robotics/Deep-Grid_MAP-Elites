@@ -47,9 +47,9 @@ namespace sferes {
 		|| !boost::fusion::at_c<PHANTOM_MODIFIER>(ea.fit_modifier()).moved(ea, desc_center))
 	      {
 	       if ((!_use_moved_fitness()
-		   && boost::fusion::at_c<PHANTOM_MODIFIER>(ea.fit_modifier()).is_empty(ea, desc_center))
+		   && !boost::fusion::at_c<PHANTOM_MODIFIER>(ea.fit_modifier()).is_empty(ea, desc_center))
 		   || (_use_moved_fitness()
-		   && boost::fusion::at_c<PHANTOM_MODIFIER>(ea.fit_modifier()).is_moved_empty(ea, desc_center)) )
+		   && !boost::fusion::at_c<PHANTOM_MODIFIER>(ea.fit_modifier()).is_moved_empty(ea, desc_center)) )
 		 {
 		   
 		   // Add descriptor to line
