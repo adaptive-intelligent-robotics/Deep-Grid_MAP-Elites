@@ -238,8 +238,12 @@ namespace sferes {
 		  {
 		    // If the former fitness was the empty value then one more cell that is filled after moving
 		    if (_moved_fitness(moved_index[cell_num]) == _empty_value)
+		    {
 		      _N_filled_moved_cells++;
-		    _moved_quality += quality[cell_num] - _moved_fitness(moved_index[cell_num]);
+		      _moved_quality += quality[cell_num];
+		    }
+		    else
+		      _moved_quality += quality[cell_num] - _moved_fitness(moved_index[cell_num]);
 		    _moved_fitness(moved_index[cell_num]) = quality[cell_num];
 		  }
 	      }
