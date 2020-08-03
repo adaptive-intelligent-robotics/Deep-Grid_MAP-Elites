@@ -34,7 +34,7 @@ def read_line(frame, algo_frame, line, algo):
 # Read a line of a stat file and write corresponding data frame when already encountered the algo
 def read_line_algo(frame, line, algo, gen_number, eval_number):
     index = frame.shape[0]
-    frame.at[index, 'algo'] = add_space(algo)
+    frame.at[index, 'algo'] = algo
     frame.at[index, 'generations'] = gen_number
     frame.at[index, 'evaluations'] = eval_number
     for stat in line.rstrip().split(' '): # Separate stat on space
@@ -53,7 +53,7 @@ def read_files(path_frame):
     algo_frame = pd.DataFrame(columns = ["generations", "evaluations", "algo"])
     # For each file
     for i in path_frame.index:
-        algo = path_frame.at[i, 'algo']
+        algo = add_space(path_frame.at[i, 'algo'])
         # If already encounter this algo, use same values for eval and gen
         if algo in algo_frame['algo'].values: 
             algo_partial = algo_frame[algo_frame['algo'] == algo]
@@ -150,3 +150,4 @@ def graph(path, task, stat_frame, path_frame, p_value = False, legend = True):
     info_frame = sort_frame(stat_frame)
     plot_graphs(frame, info_frame, 'generations', task, path, False, False, legend) # Gen plot
     plot_graphs(frame, info_frame, 'evaluations', task, path, True, p_value, legend) # Eval plot
+
