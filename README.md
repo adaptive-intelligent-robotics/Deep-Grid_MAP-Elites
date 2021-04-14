@@ -3,7 +3,7 @@
 
 [![https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg](https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg)](https://singularity-hub.org/collections/4459)
 
-This repository contains the code associated with [Fast and stable MAP-Elites in noisy domains using deep grids](url)
+This repository contains the code associated with [Fast and stable MAP-Elites in noisy domains using deep grids](https://direct.mit.edu/isal/proceedings/isal2020/32/273/98397).
 
 This code proposes an implementation of several MAP-Elites variants to handle uncertainty: the Explicit-averaging approach,  the two Adaptive-sampling approaches proposed in [MAP-Elites for noisy domains by  adaptive sampling](https://dl.acm.org/doi/abs/10.1145/3319619.3321904) and the DG-MAP-Elites approach. It allows to compare these approaches on the three tasks described in the paper.
 
